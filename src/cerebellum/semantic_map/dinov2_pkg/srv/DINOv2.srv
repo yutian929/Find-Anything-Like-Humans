@@ -1,0 +1,7 @@
+string mode  # "encode_text" or "encode_image" or "encode_images"
+string text
+sensor_msgs/Image image
+sensor_msgs/Image[] images
+---
+float32[] dinov2_fts  # 扁平化存储每个实例的dinov2特征, 基本上都是2048维
+uint16 dinov2_ft_dim  # 每个实例特征的维度

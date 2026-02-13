@@ -1,0 +1,31 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="alpha_clip_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+
+    <arg name="model_type" default="ViT-B/16" doc=""/>
+    <arg name="checkpoint_path" default="$(find alpha_clip_pkg)/scripts/weights/clip_b16_grit1m_fultune_8xe.pth" doc=""/>
+
+    <!-- 节点 -->
+    <node name="alpha_clip_node"
+          pkg="alpha_clip_pkg"
+          type="alpha_clip_node.py" 
+          launch-prefix="$(arg alpha_clip_venv)"
+          output="screen"
+          respawn="true">
+        <param name="model_type" value="$(arg model_type)"/>
+        <param name="checkpoint_path" value="$(arg checkpoint_path)"/>
+    </node>
+
+    <node name="test"
+            pkg="alpha_clip_pkg"
+            type="test.py" 
+            launch-prefix="$(arg alpha_clip_venv)"
+            output="screen"
+            respawn="true">
+        <param name="test_img_path" value="$(find alpha_clip_pkg)/scripts/alpha_clip_/examples/image.png"/>
+        <param name="test_mask_path" value="$(find alpha_clip_pkg)/scripts/alpha_clip_/examples/flower_mask.png"/>
+    </node>
+
+
+</launch>

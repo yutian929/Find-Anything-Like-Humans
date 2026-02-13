@@ -1,0 +1,63 @@
+<launch>
+    <arg name="simu_type" default="ithor" doc="ithor, habitat"/>
+
+    <group if="$(eval arg('simu_type') == 'ithor')">
+        <!-- Coarse-Fine Semantic Mapping: coarse_localize-->
+        <include file="$(find cerebellum_pkg)/launch/include/coarse_localize.launch">
+            <arg name="single_test" value="false"/>
+            <arg name="man/renew_db" value="true"/>
+        </include>
+        <!-- Coarse-Fine Semantic Mapping: fine_grained_search-->
+        <include file="$(find cerebellum_pkg)/launch/include/fine_grained_search.launch">
+            <arg name="single_test" value="false"/>
+        </include>
+        <!-- Coarse-Fine Semantic Mapping: dependencies -->
+        <include file="$(find cerebellum_pkg)/launch/include/sam.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/mvits.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/ram.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/clip.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/dinov2.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/dinov3.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/yolo_det.launch"/>
+        <!-- Test Node -->
+        <!-- <node name="sm_simu_ithor_tester" 
+            pkg="cerebellum_pkg" 
+            type="test_sm_simu_ithor.py"
+            output="screen"
+            respawn="true">
+        </node> -->
+        <!-- rviz -->
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(find cerebellum_pkg)/rviz/sm_simu_ithor.rviz"/>
+    </group>
+    <group if="$(eval arg('simu_type') == 'habitat')">
+        <!-- Coarse-Fine Semantic Mapping: coarse_localize-->
+        <include file="$(find cerebellum_pkg)/launch/include/coarse_localize.launch">
+            <arg name="single_test" value="false"/>
+            <arg name="man/renew_db" value="true"/>
+            <arg name="gen/rgb_sub" value="/habitat/rgb"/>
+        </include>
+        <!-- Coarse-Fine Semantic Mapping: fine_grained_search-->
+        <include file="$(find cerebellum_pkg)/launch/include/fine_grained_search.launch">
+            <arg name="single_test" value="false"/>
+        </include>
+        <!-- Coarse-Fine Semantic Mapping: dependencies -->
+        <include file="$(find cerebellum_pkg)/launch/include/sam.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/mvits.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/ram.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/clip.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/dinov2.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/dinov3.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/yolo_det.launch"/>
+
+        <!-- Test Node -->
+        <!-- <node name="sm_simu_habitat_tester" 
+            pkg="cerebellum_pkg" 
+            type="test_sm_simu_habitat.py"
+            output="screen"
+            respawn="true">
+        </node> -->
+        <!-- rviz -->
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(find cerebellum_pkg)/rviz/sm_simu_habitat.rviz"/>
+    </group>
+
+</launch>

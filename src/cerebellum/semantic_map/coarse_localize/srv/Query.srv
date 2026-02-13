@@ -1,0 +1,10 @@
+string query  # text query to search for semantic instances
+---
+bool success
+string message
+int32 id
+string[] labels
+float32[] aabb_min
+float32[] aabb_max
+float32[] center
+geometry_msgs/Pose[] poses

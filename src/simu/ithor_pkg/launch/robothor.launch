@@ -1,0 +1,26 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="ithor_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+    <arg name="enable_sample_pcd" default="true"/>
+
+    <!-- 节点 -->
+    <node name="robothor" 
+          pkg="ithor_pkg" 
+          type="robothor_node.py"
+          launch-prefix="$(arg ithor_venv)"
+          output="screen"
+          respawn="true">
+          <param name="enable_sample_pcd" value="$(arg enable_sample_pcd)"/>
+    </node>
+
+    <node name="keyboard" 
+          pkg="ithor_pkg" 
+          type="keyboard_ctl_node.py"
+          launch-prefix="$(arg ithor_venv)"
+          output="screen"
+          respawn="true">
+    </node>
+
+
+</launch>

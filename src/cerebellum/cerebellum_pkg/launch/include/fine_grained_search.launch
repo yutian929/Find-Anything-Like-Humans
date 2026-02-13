@@ -1,0 +1,67 @@
+<launch>
+    <!-- Env Variables -->
+    <arg name="fine_grained_search_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+    <arg name="single_test" default="true" doc=""/>
+    
+    <!-- Dependencies -->
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/clip.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/dinov2.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/dinov3.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/sam.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/mvits.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/ram.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/yolo_det.launch"/>
+
+    <!-- Key Arguments -->
+    <arg name="debug" default="true" doc=""/>
+    <arg name="camera_link_father" default="map" doc=""/>
+    <arg name="camera_link_child" default="camera_rgb_optical_frame" doc=""/>
+    <arg name="rgb_sub" default="/ai2thor/rgb" doc=""/>
+    <arg name="depth_sub" default="/ai2thor/depth" doc=""/>
+    <arg name="caminfo_sub" default="/ai2thor/camera_info" doc=""/>
+    <arg name="depth_scale" default="1.0" doc=""/>
+    <arg name="depth_filter_min_depth" default="0.1" doc=""/>
+    <arg name="depth_filter_max_depth" default="10.0" doc=""/>
+    <arg name="enable_sample" default="true" doc=""/>
+    <arg name="max_sample" default="5000" doc=""/>
+    <arg name="enable_filter" default="true" doc=""/>
+    <arg name="enable_erode" default="true" doc=""/>
+    <arg name="yolo_det_score_threshold" default="0.5" doc=""/>
+    <arg name="masks_merge_iou_threshold" default="0.5" doc=""/>
+    <arg name="masks_merge_contain_threshold" default="0.8" doc=""/>
+    <arg name="enable_show_annotated_frame" default="true" doc=""/>
+    <arg name="enable_show_fullseg_masks" default="true" doc=""/>
+    <arg name="enable_show_merged_masks" default="true" doc=""/>
+    <arg name="enable_show_query_pcd2" default="true" doc=""/>
+
+    <!-- Main Node -->
+    <node name="fine_grained_search_node"
+          pkg="fine_grained_search"
+          type="fine_grained_search_node.py" 
+          launch-prefix="$(arg fine_grained_search_venv)"
+          output="screen"
+          respawn="true">
+      <param name="debug" value="$(arg debug)"/>
+      <param name="camera_link_father" value="$(arg camera_link_father)"/>
+      <param name="camera_link_child" value="$(arg camera_link_child)"/>
+      <param name="rgb_sub" value="$(arg rgb_sub)"/>
+      <param name="depth_sub" value="$(arg depth_sub)"/>
+      <param name="caminfo_sub" value="$(arg caminfo_sub)"/>
+      <param name="depth_scale" value="$(arg depth_scale)"/>
+      <param name="depth_filter_min_depth" value="$(arg depth_filter_min_depth)"/>
+      <param name="depth_filter_max_depth" value="$(arg depth_filter_max_depth)"/>
+      <param name="enable_sample" value="$(arg enable_sample)"/>
+      <param name="max_sample" value="$(arg max_sample)"/>
+      <param name="enable_filter" value="$(arg enable_filter)"/>
+      <param name="enable_erode" value="$(arg enable_erode)"/>
+      <param name="yolo_det_score_threshold" value="$(arg yolo_det_score_threshold)"/>
+      <param name="masks_merge_iou_threshold" value="$(arg masks_merge_iou_threshold)"/>
+      <param name="masks_merge_contain_threshold" value="$(arg masks_merge_contain_threshold)"/>
+      <param name="enable_show_annotated_frame" value="$(arg enable_show_annotated_frame)"/>
+      <param name="enable_show_fullseg_masks" value="$(arg enable_show_fullseg_masks)"/>
+      <param name="enable_show_merged_masks" value="$(arg enable_show_merged_masks)"/>
+      <param name="enable_show_query_pcd2" value="$(arg enable_show_query_pcd2)"/>
+    </node>
+
+</launch>

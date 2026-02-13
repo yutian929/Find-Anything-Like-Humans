@@ -1,0 +1,24 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="depth_enhance_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+
+    <!-- 节点 -->
+    <node name="depth_enhance_node"
+          pkg="promptda_pkg"
+          type="depth_enhancer.py"
+          launch-prefix="$(arg depth_enhance_venv)"
+          output="screen"
+          respawn="true">
+    </node>
+
+    <node name="test"
+            pkg="promptda_pkg"
+            type="test.py" 
+            launch-prefix="$(arg depth_enhance_venv)"
+            output="screen"
+            respawn="true">
+    </node>
+
+
+</launch>

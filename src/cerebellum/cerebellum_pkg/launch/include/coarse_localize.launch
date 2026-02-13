@@ -1,0 +1,86 @@
+<launch>
+    <!-- Env Variables -->
+    <arg name="coarse_localize_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+    <arg name="single_test" default="true" doc=""/>
+    
+    <!-- Dependencies -->
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/clip.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/dinov2.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/dinov3.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/sam.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/mvits.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/ram.launch"/>
+    <include if="$(arg single_test)" file="$(find cerebellum_pkg)/launch/include/yolo_det.launch"/>
+
+    <!-- Key Arguments -->
+    <arg name="gen/debug" default="true" doc=""/>
+    <arg name="gen/main_loop_duration" default="0.1" doc=""/>
+    <arg name="gen/caod_head" default="dinov3" doc="Options: mvits, ram"/>
+    <arg name="gen/seg_head" default="evit-sam" doc="Options: fast-sam, evit-sam"/>
+    <arg name="gen/feature_encode_head" default="dinov3" doc="Options: clip, dinov2, dinov3"/>
+    <arg name="gen/pose_link_father" default="map" doc=""/>
+    <arg name="gen/pose_link_child" default="camera_link" doc=""/>
+    <arg name="gen/rgb_sub" default="/ai2thor/rgb" doc=""/>
+    <arg name="gen/masks_merge_iou_threshold" default="0.5" doc=""/>
+    <arg name="gen/masks_merge_contain_threshold" default="0.8" doc=""/>
+    <arg name="gen/enable_pub_memory" default="true" doc=""/>
+    <arg name="gen/enable_show_annotated_frame" default="true" doc=""/>
+    <arg name="gen/enable_show_det_masks" default="true" doc=""/>
+    <arg name="gen/enable_show_fullseg_masks" default="true" doc=""/>
+    <arg name="gen/enable_show_merged_masks" default="true" doc=""/>
+
+    <arg name="man/debug" default="true" doc=""/>
+    <arg name="man/feature_encode_head" default="dinov3" doc="Options: clip, dinov2, dinov3"/>
+    <arg name="man/pose_link_father" default="map"/>
+    <arg name="man/memory_db_path" default="coarse_localize.db" doc="Memory DB params"/>
+    <arg name="man/renew_db" default="true" doc=""/>
+    <arg name="man/grid_size" default="0.05" doc=""/>
+    <arg name="man/max_yaws_per_grid" default="8" doc=""/>
+    <arg name="man/query_top_k" default="5" doc=""/>
+    <arg name="man/query_similarity_threshold" default="0.15" doc=""/>
+    <arg name="man/preset_db_path" default="preset.db" doc="Preset DB params"/>
+    <arg name="man/query_preset_threshold" default="0.95" doc=""/>
+    <arg name="man/enable_show_query_markers" default="true" doc=""/>
+
+    <!-- Main Node -->
+    <node name="memory_generator"
+          pkg="coarse_localize"
+          type="memory_generator.py" 
+          launch-prefix="$(arg coarse_localize_venv)"
+          output="screen"
+          respawn="true">
+        <param name="debug" value="$(arg gen/debug)"/>
+        <param name="main_loop_duration" value="$(arg gen/main_loop_duration)"/>
+        <param name="pose_link_father" value="$(arg gen/pose_link_father)"/>
+        <param name="pose_link_child" value="$(arg gen/pose_link_child)"/>
+        <param name="rgb_sub" value="$(arg gen/rgb_sub)"/>
+        <param name="masks_merge_iou_threshold" value="$(arg gen/masks_merge_iou_threshold)"/>
+        <param name="masks_merge_contain_threshold" value="$(arg gen/masks_merge_contain_threshold)"/>
+        <param name="enable_pub_memory" value="$(arg gen/enable_pub_memory)"/>
+        <param name="enable_show_annotated_frame" value="$(arg gen/enable_show_annotated_frame)"/>
+        <param name="enable_show_det_masks" value="$(arg gen/enable_show_det_masks)"/>
+        <param name="enable_show_fullseg_masks" value="$(arg gen/enable_show_fullseg_masks)"/>
+        <param name="enable_show_merged_masks" value="$(arg gen/enable_show_merged_masks)"/>
+    </node>
+
+    <node name="memory_manager"
+          pkg="coarse_localize"
+          type="memory_manager.py" 
+          launch-prefix="$(arg coarse_localize_venv)"
+          output="screen"
+          respawn="true">
+        <param name="debug" value="$(arg man/debug)"/>
+        <param name="pose_link_father" value="$(arg man/pose_link_father)"/>
+        <param name="memory_db_path" value="$(arg man/memory_db_path)"/>
+        <param name="renew_db" value="$(arg man/renew_db)"/>
+        <param name="grid_size" value="$(arg man/grid_size)"/>
+        <param name="max_yaws_per_grid" value="$(arg man/max_yaws_per_grid)"/>
+        <param name="query_top_k" value="$(arg man/query_top_k)"/>
+        <param name="query_similarity_threshold" value="$(arg man/query_similarity_threshold)"/>
+        <param name="preset_db_path" value="$(arg man/preset_db_path)"/>
+        <param name="query_preset_threshold" value="$(arg man/query_preset_threshold)"/>
+        <param name="enable_show_query_markers" value="$(arg man/enable_show_query_markers)"/>
+    </node>
+
+</launch>

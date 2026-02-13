@@ -1,0 +1,30 @@
+<launch>
+    <!-- Launch file for Livox MID360 LiDAR -->
+
+	<rosparam command="load" file="$(find fast_lio)/config/mid360.yaml" />
+	<param name="feature_extract_enable" type="bool" value="0"/>
+	<param name="point_filter_num" type="int" value="3"/>
+	<param name="max_iteration" type="int" value="3" />
+	<param name="filter_size_surf" type="double" value="0.5" />
+	<param name="filter_size_map" type="double" value="0.5" />
+	<param name="cube_side_length" type="double" value="1000" />
+	<param name="runtime_pos_log_enable" type="bool" value="0" />
+    <node pkg="fast_lio" type="fastlio_mapping" name="laserMapping" output="screen" /> 
+
+    <!-- 发布静态tf变换，map->camera_init body->camera_link 首次建图的时候，认为camera_init和map是相同的（xy平面上) -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_camera_init" args="0 0 0 0 0 0 map camera_init" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="body_to_camera_link" args="-0.2 0 0.6 0 0 0 body camera_link" />
+
+    <!-- 启动 octomap_server 读取清洗后的点云 将3D点云映射到2D栅格地图/map -->
+    <node pkg="octomap_server" type = "octomap_server_node" name="octomap_server">
+        <param name ="resolution" value="0.05" />
+        <param name = "frame_id" type="str" value="map" />
+        <param name = "sensor_model/max_range" value="1000.0" />
+        <param name = "latch" value="true" />
+        <param name = "pointcloud_max_z" value="1.5" />
+        <param name = "pointcloud_min_z" value="0.0" />
+        <remap from ="cloud_in" to="/cloud_registered" />
+        <remap from ="projected_map" to="/map" />
+    </node>
+
+</launch>

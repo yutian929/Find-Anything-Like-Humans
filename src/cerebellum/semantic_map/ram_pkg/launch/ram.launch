@@ -1,0 +1,36 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="ram_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+    <arg name="image_size" default="384" doc=""/>
+    <arg name="pretrained" default="$(find ram_pkg)/scripts/weights/ram_plus_swin_large_14m.pth" doc=""/>
+
+    <!-- ram_plus_worker -->
+    <node name="ram_plus_worker"
+          pkg="ram_pkg"
+          type="ram_plus_worker.py"
+          launch-prefix="$(arg ram_venv)"
+          output="screen"
+          args="--host 0.0.0.0 --port 55555 --image_size 384 --pretrained $(find ram_pkg)/scripts/weights/ram_plus_swin_large_14m.pth" />
+
+    <!-- ram_plus_node -->
+    <node name="ram_plus_node"
+          pkg="ram_pkg"
+          type="ram_plus_node.py" 
+          launch-prefix="$(arg ram_venv)"
+          output="screen"
+          respawn="true">
+        <param name="image_size" value="$(arg image_size)"/>
+        <param name="pretrained" value="$(arg pretrained)"/>
+        <param name="server_host" value="127.0.0.1"/>
+        <param name="server_port" value="55555"/>
+    </node>
+
+    <node name="test_ram_plus_node"
+            pkg="ram_pkg"
+            type="test.py" 
+            launch-prefix="$(arg ram_venv)"
+            output="screen"
+            respawn="true">
+    </node>
+</launch>

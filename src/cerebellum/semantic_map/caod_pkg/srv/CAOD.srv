@@ -1,0 +1,8 @@
+string mode  # "origin" or "nms"
+sensor_msgs/Image color_image
+float32 score_threshold   # Score threshold for filtering
+float32 nms_threshold   # IOU threshold for NMS
+---
+int32[] boxes  # 扁平化存储每个实例的边界框, 基本上都是4维
+float32[] scores  # 扁平化存储每个实例的分数
+sensor_msgs/Image annotated_frame

@@ -1,0 +1,8 @@
+# EvitSamSegmentation.srv
+string model  # "evit", "fast"
+string mode  # "full", "bbox"
+sensor_msgs/Image color_image
+int32[] boxes
+---
+sensor_msgs/Image[] seg_masks
+sensor_msgs/Image masked_frame

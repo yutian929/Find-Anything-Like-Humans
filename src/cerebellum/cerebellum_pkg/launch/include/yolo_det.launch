@@ -1,0 +1,19 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="yolo_world_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+    
+    <arg name="det/model_path" default="$(find yolo_world_pkg)/scripts/weights/yolov8l-worldv2.pt" doc=""/>
+    <arg name="det/box_threshold" default="0.25" doc=""/>
+    <!-- det -->
+    <node name="yolo_world_node"
+          pkg="yolo_world_pkg"
+          type="yolo_world_node.py" 
+          launch-prefix="$(arg yolo_world_venv)"
+          output="screen"
+          respawn="true">
+        <param name="model_path" value="$(arg det/model_path)"/>
+        <param name="box_threshold" value="$(arg det/box_threshold)"/>
+    </node> 
+
+</launch>

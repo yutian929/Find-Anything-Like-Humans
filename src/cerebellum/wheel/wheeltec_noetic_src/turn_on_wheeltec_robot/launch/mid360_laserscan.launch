@@ -1,0 +1,10 @@
+<launch>
+    <!-- Launch file for Livox MID360 LiDAR -->
+    <include file="$(find livox_ros_driver2)/launch_ROS1/msg_MID360.launch">
+        <arg name="xfer_format" value="0"/>
+    </include>
+
+    <!-- pointscloud2 to laserscans -->
+	<include file="$(find turn_on_wheeltec_robot)/launch/include/PointsCloud2toLaserscan.launch">
+	</include>
+</launch>

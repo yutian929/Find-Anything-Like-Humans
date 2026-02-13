@@ -1,0 +1,13 @@
+<launch>
+    <arg name="detseg_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <include file="$(find cerebellum_pkg)/launch/include/detsam.launch"/>
+    <!-- 主detseg测试节点 -->
+    <node name="test_detseg_node" 
+          pkg="cerebellum_pkg" 
+          type="test_detseg_node.py"
+          launch-prefix="$(arg detseg_venv)"
+          output="screen"
+          required="true">
+    </node>
+
+</launch>

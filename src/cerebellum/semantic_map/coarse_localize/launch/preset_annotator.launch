@@ -1,0 +1,26 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="preset_annotator_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+    <arg name="feature_encode_head" default="dinov3" doc="Options: clip, dinov2, dinov3"/>
+
+    <!-- <arg name="clip_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <arg name="clip/model_type" default="ViT-B/16" doc=""/>
+    <node name="clip_node"
+          pkg="clip_pkg"
+          type="clip_node.py" 
+          launch-prefix="$(arg clip_venv)"
+          output="screen"
+          respawn="true">
+        <param name="model_type" value="$(arg clip/model_type)"/>
+    </node> -->
+
+    <node name="preset_annotator"
+          pkg="coarse_localize"
+          type="preset_annotator.py" 
+          launch-prefix="$(arg preset_annotator_venv)"
+          output="screen"
+          respawn="true">
+        <param name="feature_encode_head" value="$(arg feature_encode_head)"/>
+    </node>
+</launch>

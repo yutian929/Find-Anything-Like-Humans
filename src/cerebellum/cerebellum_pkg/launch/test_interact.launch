@@ -1,0 +1,18 @@
+<launch>
+
+    <arg name="interact_venv" default="/home/$(env USER)/miniconda3/envs/interact/bin/python" doc="交互测试节点的Python环境路径"/>
+    
+    <!-- 依赖：interact (wakeup, stt, tts) -->
+    <include file="$(find cerebellum_pkg)/launch/include/interact.launch"/>
+
+    <!-- 主交互测试节点 -->
+    <node name="test_interact_node" 
+          pkg="cerebellum_pkg" 
+          type="test_interact_node.py"
+          launch-prefix="$(arg interact_venv)"
+          output="screen"
+          required="true">
+      <param name="default_stt_wav_path" type="str" value="$(env YANBOT_WS)/last_heard_audios/stt.wav" />
+    </node>
+
+</launch>

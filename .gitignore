@@ -1,0 +1,21 @@
+# YANBOT_WS
+__pycache__
+*.pyc
+.catkin_workspace
+.vscode/
+.catkin_tools/
+build/
+devel/
+logs/
+temp/
+thirdparties/
+last_seen_imgs/
+last_heard_audios/
+*.db
+*.bag
+*.log
+*.wav
+*.pkl
+*.pth
+*.pt
+*.ckpt

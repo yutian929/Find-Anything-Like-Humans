@@ -1,0 +1,67 @@
+<launch>
+    <!-- SLAM Function Selection -->
+    <arg name="slam/lidar_type" default="0" doc="0:None, 1:Mid360, 2:lsx10"/>
+    <arg name="slam/algorithm" default="fast_lio" doc="gmapping/fast_lio"/>
+    <!-- Semantic Mapping Function Selection -->
+    <arg name="sm/algorithm" default="coarse_fine" doc="coarse_fine"/>
+
+
+    <!-- SLAM -->
+    <group if="$(eval arg('slam/algorithm') == 'gmapping')">
+        <!-- RViz Visualization -->
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(find turn_on_wheeltec_robot)/rviz/first_mapping.rviz"/>
+        <!-- SLAM -->
+        <include file="$(find turn_on_wheeltec_robot)/launch/mapping.launch">
+            <arg name="lidar_type" value="$(arg slam/lidar_type)"/>
+        </include>
+        <!-- Map Saver -->
+        <node pkg="turn_on_wheeltec_robot" type="first_mapping_saver_node.py" name="first_mapping_saver_node" output="screen"/>
+    </group>
+    <group if="$(eval arg('slam/algorithm') == 'fast_lio')">
+        <!-- RViz Visualization -->
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(find fast_lio)/rviz_cfg/fast_lio_livox.rviz" />
+        <!-- SLAM -->
+        <include file="$(find fast_lio)/launch/build_map_mid360.launch">
+            <!-- <arg name="lidar_type" value="$(arg slam/lidar_type)"/> -->
+        </include>
+        <!-- Map Saver -->
+        <node pkg="fast_lio" type="first_mapping_saver.py" name="first_mapping_saver" output="screen">
+            <param name="save_map_topic" value="/map" />
+            <param name="full_save_path" value="$(find fast_lio)/PCD/scans" />
+            <param name="save_interval" value="10.0" />
+        </node>
+    </group>
+
+    <!-- SM -->
+    <group if="$(eval arg('sm/algorithm') == 'coarse_fine')">
+        <!-- Coarse-Fine Semantic Mapping: coarse_localize-->
+        <include file="$(find cerebellum_pkg)/launch/include/coarse_localize.launch">
+            <arg name="single_test" value="false"/>
+            <arg name="gen/pose_link_father" value="map"/>
+            <arg name="gen/pose_link_child" value="body"/>
+            <arg name="gen/rgb_sub" value="/camera/color/image_raw"/>
+
+            <arg name="man/renew_db" value="true"/>
+        </include>
+        <!-- Coarse-Fine Semantic Mapping: fine_grained_search-->
+        <include file="$(find cerebellum_pkg)/launch/include/fine_grained_search.launch">
+            <arg name="single_test" value="false"/>
+            <arg name="camera_link_father" value="map"/>
+            <arg name="camera_link_child" value="camera_color_optical_frame"/>
+            <arg name="rgb_sub" value="/camera/color/image_raw"/>
+            <arg name="depth_sub" value="/camera/aligned_depth_to_color/image_raw"/>
+            <arg name="caminfo_sub" value="/camera/color/camera_info"/>
+            <arg name="depth_scale" value="1000.0"/>
+        </include>
+        <!-- Coarse-Fine Semantic Mapping: dependencies -->
+        <include file="$(find cerebellum_pkg)/launch/include/sam.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/mvits.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/dinov3.launch"/>
+        <include file="$(find cerebellum_pkg)/launch/include/yolo_det.launch"/>
+    </group>
+
+    <!-- Realsense Camera -->
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="align_depth" value="true"/>
+    </include>
+</launch>

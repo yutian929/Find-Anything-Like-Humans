@@ -1,0 +1,16 @@
+<launch>
+    <include file="$(find cerebellum_pkg)/launch/include/sam.launch"/>
+    <include file="$(find cerebellum_pkg)/launch/include/mvits.launch"/>
+    <include file="$(find cerebellum_pkg)/launch/include/ram.launch"/>
+    <include file="$(find cerebellum_pkg)/launch/include/clip.launch"/>
+    <include file="$(find cerebellum_pkg)/launch/include/dinov2.launch"/>
+    <include file="$(find cerebellum_pkg)/launch/include/dinov3.launch"/>
+    <include file="$(find cerebellum_pkg)/launch/include/yolo_det.launch"/>
+
+    <node name="forward_pipeline"
+          pkg="coarse_localize"
+          type="experiment_forward_pipeline.py"
+          output="screen"
+          respawn="true">
+    </node>
+</launch>

@@ -1,0 +1,39 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="clip_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+
+    <arg name="model_type" default="ViT-B/16" doc=""/>
+
+    <!-- clip worker -->
+    <node name="clip_worker"
+          pkg="clip_pkg"
+          type="clip_worker.py"
+          launch-prefix="$(arg clip_venv)"
+          output="screen"
+          args="--host 0.0.0.0 --port 55557 --model_type $(arg model_type)" />
+
+
+    <!-- clip node -->
+    <node name="clip_node"
+          pkg="clip_pkg"
+          type="clip_node.py" 
+          launch-prefix="$(arg clip_venv)"
+          output="screen"
+          respawn="true">
+        <param name="server_host" value="127.0.0.1"/>
+        <param name="server_port" value="55557"/>
+    </node>
+
+    <node name="test"
+            pkg="clip_pkg"
+            type="test.py" 
+            launch-prefix="$(arg clip_venv)"
+            output="screen"
+            respawn="true">
+        <param name="cat_img_path" value="$(find clip_pkg)/scripts/cat.jpg"/>
+        <param name="dog_img_path" value="$(find clip_pkg)/scripts/dog.jpg"/>
+    </node>
+
+
+</launch>

@@ -1,0 +1,50 @@
+<launch>
+    <!-- 加载2D栅格地图，发布到/map话题，供move_base使用 -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find fast_lio)/PCD/scans.yaml" />
+
+    <!-- 将fast-lio发布的/cloud_registered点云转成/scan激光扫描，供move_base使用 -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        <remap from="cloud_in" to="/cloud_registered"/>
+        
+        <rosparam>
+            transform_tolerance: 0.01
+            min_height: 0.0
+            max_height: 1.0
+
+            angle_min: -3.14159 # -M_PI/2
+            angle_max: 3.14159 # M_PI/2
+            angle_increment: 0.0087 # M_PI/360.0
+            scan_time: 10
+            range_min: 0.05
+            range_max: 30.0
+            use_inf: true
+            inf_epsilon: 1.0
+            
+            concurrency_level: 1
+        </rosparam>
+    </node>
+
+    <!-- 添加move_base节点 -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <!-- 加载全局与局部代价地图参数 -->
+        <rosparam file="$(find fast_lio_navigation)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find fast_lio_navigation)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find fast_lio_navigation)/params/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find fast_lio_navigation)/params/global_costmap_params.yaml" command="load" />
+        
+        <!-- 规划器参数 -->
+        <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
+        <rosparam file="$(find fast_lio_navigation)/params/global_planner_params.yaml" command="load" />
+        <rosparam file="$(find fast_lio_navigation)/params/teb_local_planner_params.yaml" command="load" />
+
+        <!-- 重映射话题，确保move_base使用正确的输入 -->
+        <remap from="odom" to="/localization" />
+    </node>
+
+    <!-- 添加小车底盘驱动串口 -->
+    <include file="$(find turn_on_wheeltec_robot)/launch/include/base_serial.launch">
+        <arg name="odom_frame_id"  value="not_care"/>
+        <arg name="use_wheeltec_gnss" value="false"/>
+        <arg name="use_wheeltec_imu" value="false"/>
+    </include>
+</launch>

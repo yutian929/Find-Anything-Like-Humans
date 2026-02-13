@@ -1,0 +1,77 @@
+{
+    "FloorPlan1": {
+        "1": {
+            "name": "CoffeeMachine_19c6af8e",
+            "position": {"x": -0.3, "y": 1.1, "z": -0.8},
+            "rotation": {"x": 0, "y": 0, "z": 0}
+        },
+        "2": {
+            "name": "HousePlant_cc99edda",
+            "position": {"x": -0.9, "y": 0.889, "z": -2.5},
+            "rotation": {"x": 0, "y": 0, "z": 0}
+        }
+    },
+    "FloorPlan6": {
+        "1": {
+            "name": "Microwave_040dd0fc",
+            "position": {"x": -0.2, "y": 0.900, "z": 1.5},
+            "rotation": {"x": 0, "y": 180, "z": 0}
+        }
+    },
+    "FloorPlan16": {
+        "1": {
+            "name": "Toaster_0fd00d56",
+            "position": {"x": 2.5, "y": 1.018, "z": 1.3},
+            "rotation": {"x": 0, "y": 0, "z": 0}
+        }
+    },
+    "FloorPlan201": {
+        "1": {
+            "name": "Chair_2fb28f53",
+            "position": {"x": -4, "y": 0.020, "z": 4.8},
+            "rotation": {"x": 0, "y": 0, "z": 0}
+        }
+    },
+    "FloorPlan206": {
+        "1": {
+            "name": "GarbageCan_d4262177",
+            "position": {"x": -1.6, "y": -0.001, "z": 0.1},
+            "rotation": {"x": 0, "y": 0, "z": 0}
+        }
+    },
+    "FloorPlan214": {
+        "1": {
+            "name": "ArmChair_bd3270d9",
+            "position": {"x": -1.5, "y": 0.018, "z": 6.450},
+            "rotation": {"x": 0, "y": 180, "z": 0}
+        }
+    },
+    "FloorPlan303": {
+        "1": {
+            "name": "DeskLamp_73bc8a3d",
+            "position": {"x": 0.2, "y": 0.87, "z": -2.2},
+            "rotation": {"x": 0, "y": 180, "z": 0}
+        }
+    },
+    "FloorPlan308": {
+        "1": {
+            "name": "Chair_2b1385b3",
+            "position": {"x": -0.137, "y": 0.001, "z": 2},
+            "rotation": {"x": 0, "y": 180, "z": 0}
+        }
+    },
+    "FloorPlan321": {
+        "1": {
+            "name": "GarbageCan_6d2a209f",
+            "position": {"x": 2, "y": 0, "z": -2.4},
+            "rotation": {"x": 0, "y": 0, "z": 0}
+        }
+    },
+    "FloorPlan413": {
+        "1": {
+            "name": "GarbageCan_4516c602",
+            "position": {"x": -1.1, "y": -0.030, "z": 3.761},
+            "rotation": {"x": 0, "y": 0, "z": 0}
+        }
+    }
+}

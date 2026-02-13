@@ -1,0 +1,9 @@
+# YoloDetection.srv
+sensor_msgs/Image color_image
+string[] prompt
+---
+string[] labels
+int32[] class_id
+float32[] scores
+int32[] boxes
+sensor_msgs/Image annotated_frame

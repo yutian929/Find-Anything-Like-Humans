@@ -1,0 +1,28 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="caod_venv" default="/home/$(env USER)/miniconda3/envs/mvits/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+
+    <arg name="model_type" default="mdef_detr_minus_language" doc=""/>
+    <arg name="model_checkpoints_path" default="$(find caod_pkg)/scripts/weights/MDef_DETR_minus_language_r101_epoch10.pth" doc=""/>
+
+    <!-- mvits worker -->
+    <node name="mvits_worker"
+          pkg="caod_pkg"
+          type="mvits_worker.py"
+          launch-prefix="$(arg caod_venv)"
+          output="screen"
+          args="--host 0.0.0.0 --port 55556 --model_type $(arg model_type) --model_checkpoints_path $(arg model_checkpoints_path)" />
+
+    <!-- mvits_node -->
+    <node name="mvits_node"
+          pkg="caod_pkg"
+          type="mvits_node.py" 
+          launch-prefix="$(arg caod_venv)"
+          output="screen"
+          respawn="true">
+        <param name="server_host" value="127.0.0.1"/>
+        <param name="server_port" value="55556"/>
+    </node>
+
+</launch>

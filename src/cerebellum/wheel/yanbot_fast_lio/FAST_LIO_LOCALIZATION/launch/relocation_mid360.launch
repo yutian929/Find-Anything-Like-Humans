@@ -1,0 +1,29 @@
+<launch>
+	<!-- Launch file for Livox MID360 LiDAR -->
+	<rosparam command="load" file="$(find fast_lio_localization)/config/mid360.yaml" />
+
+	<!-- 使用fast-lio来提供camera_init->body的tf变化，话题Odometry -->
+	<param name="feature_extract_enable" type="bool" value="0"/>
+	<param name="point_filter_num" type="int" value="3"/>
+	<param name="max_iteration" type="int" value="3" />
+	<param name="filter_size_surf" type="double" value="0.5" />
+	<param name="filter_size_map" type="double" value="0.5" />
+	<param name="cube_side_length" type="double" value="1000" />
+	<param name="runtime_pos_log_enable" type="bool" value="0" />
+    <node pkg="fast_lio" type="fastlio_mapping" name="laserMapping" output="screen" /> 
+
+	<!-- 使用fast-lio-localization实现map->camera_init的tf变化，全局定位/localization-->
+	<!-- 从PCD文件加载点云发布到ROS话题，发布的frame_id是map，话题名称是/cloud_map -->
+	<arg name="pcd_map_path" default="$(find fast_lio)/PCD/scans.pcd" />
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="map_publisher" output="screen"
+		  args="$(arg pcd_map_path) 5 _frame_id:=map cloud_pcd:=/cloud_map" />
+	<!-- localization-->
+    <node pkg="fast_lio_localization" type="global_localization.py" name="global_localization" output="screen" />
+	<!-- transform  fusion-->
+    <node pkg="fast_lio_localization" type="transform_fusion.py" name="transform_fusion" output="screen" />
+
+	<!-- 发布静态tf变换，body->camera_link -->
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_camera_init" args="0 0 0 0 0 0 map camera_init" /> -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="body_to_camera_link" args="-0.2 0 0.6 0 0 0 body camera_link" />
+
+</launch>

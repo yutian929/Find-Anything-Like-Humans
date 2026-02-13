@@ -1,0 +1,27 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="ithor_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+
+    <arg name="enable_sample_pcd" default="true" doc="是否开启点云采样"/>
+
+    <!-- 节点 -->
+    <node name="ai2thor" 
+          pkg="ithor_pkg" 
+          type="ai2thor_node.py"
+          launch-prefix="$(arg ithor_venv)"
+          output="screen"
+          respawn="true">
+        <param name="enable_sample_pcd" value="$(arg enable_sample_pcd)"/>
+    </node>
+
+    <node name="keyboard" 
+          pkg="ithor_pkg" 
+          type="keyboard_ctl_node.py"
+          launch-prefix="$(arg ithor_venv)"
+          output="screen"
+          respawn="true">
+    </node>
+
+
+</launch>

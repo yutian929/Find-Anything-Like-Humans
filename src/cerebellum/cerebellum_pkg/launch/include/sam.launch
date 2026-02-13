@@ -1,0 +1,23 @@
+<launch>
+    <!-- 获取环境变量 -->
+    <arg name="evit_sam_venv" default="/home/$(env USER)/miniconda3/envs/py310/bin/python" doc=""/>
+    <env name="LD_PRELOAD" value="/usr/lib/x86_64-linux-gnu/libtiff.so.5"/>
+    
+    <arg name="seg/evit_sam_checkpoint" default="$(find evit_sam_pkg)/scripts/weights/efficientvit_sam_l1.pt" doc=""/>
+    <arg name="seg/evit_sam_model" default="efficientvit-sam-l1" doc=""/>
+    <arg name="seg/fast_sam_checkpoint" default="$(find evit_sam_pkg)/scripts/weights/FastSAM-x.pt" doc=""/>
+
+    <!-- seg -->
+    <node name="sam_node"
+          pkg="evit_sam_pkg"
+          type="sam_node.py" 
+          launch-prefix="$(arg evit_sam_venv)"
+          output="screen"
+          respawn="true">
+        <param name="evit_sam_checkpoint" value="$(arg seg/evit_sam_checkpoint)"/>
+        <param name="evit_sam_model" value="$(arg seg/evit_sam_model)"/>
+        <param name="fast_sam_checkpoint" value="$(arg seg/fast_sam_checkpoint)"/>
+    </node>
+
+
+</launch>

@@ -1,0 +1,34 @@
+# ---------- Request ----------
+sensor_msgs/Image rgb_msg
+string caod_head                 # "mvits" 或 "ram"
+string seg_head                  # "evit-sam" 或 "fast-sam"
+string feature_encode_head       # "clip" 或 "dinov2"
+
+# （可选）把掩码合并阈值放进请求，便于实验时动态调整
+float32 masks_merge_iou_threshold
+float32 masks_merge_contain_threshold
+---
+# ---------- Response ----------
+bool success
+string message
+
+# 分割结果（与 rgb_blocks 一一对应）
+sensor_msgs/Image[] seg_masks    # mono8 掩码图
+
+# 语义特征（将每个块的特征向量顺序拼接为一维数组）
+float32[] semantic_fts
+int32 semantic_ft_dim            # 每个特征向量的维度（用它把 semantic_fts 还原成 [N, D]）
+
+# 计时（单位：秒）
+float64 time_forward
+float64 time_copy_data
+float64 time_seg_full
+float64 time_seg_bbox
+float64 time_obj_det_caod
+float64 time_gen_tag_ram
+float64 time_obj_det_yolo
+float64 time_merge_masks
+float64 time_extract_bboxes
+float64 time_encode_images_clip
+float64 time_encode_images_dinov2
+float64 time_encode_images_dinov3
